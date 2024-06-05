@@ -4,6 +4,8 @@
 scene
 camera
 renderer
+
+most geometry requires light source but basic materials dont
 */
 
 import * as three from 'three';
@@ -19,4 +21,17 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(30);
 
-renderer.render(scene, camera); //render scene and camera
+//renderer.render(scene, camera); //render scene and camera
+
+const geometry = new three.TorusGeometry(10, 3, 16, 100);
+const material = new three.MeshBasicMaterial({color: 0xFF6347, wireframe: true});
+const torus = new three.Mesh(geometry, material);
+
+scene.add(torus);
+
+function mainAnimate() {
+  requestAnimationFrame(mainAnimate);
+  renderer.render(scene, camera);
+}
+
+mainAnimate();
