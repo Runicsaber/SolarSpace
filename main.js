@@ -163,6 +163,10 @@ function mainAnimate() {
   sphere.rotation.y += 0.005;
   sphere.rotation.z += 0.01;
 
+  particleMesh.rotation.x += 0.0002
+  particleMesh.rotation.y -= 0.0002
+  particleMesh.rotation.z += 0.0002
+
   renderer.render(scene, camera);
 
   orbitControls.update();
