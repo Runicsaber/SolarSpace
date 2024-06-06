@@ -45,8 +45,14 @@ camera.position.setZ(30);
 
 
 //creating sphere
+const earthTexture = new THREE.TextureLoader().load('./assets/earthAssets/8k_earth_nightmap.jpg')
+const earthNormalTexture = new THREE.TextureLoader().load('./assets/earthAssets/earth-normal-map.jpeg')
 const geometry = new THREE.SphereGeometry(15, 64, 64);
-const material = new THREE.MeshStandardMaterial({color: 0x8B516A}); //8B516A //0xB70AFA
+const material = new THREE.MeshStandardMaterial({
+  //color: 0x8B516A,
+  map: earthTexture,
+  normalMap: earthNormalTexture
+}); //8B516A //0xB70AFA
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
 
@@ -118,7 +124,7 @@ const pointLightFolder = gui.addFolder('Point Light');
 pointLightFolder.add(pointLight.position, 'x', 0, 100).name('X Position');
 pointLightFolder.add(pointLight.position, 'y', 0, 100).name('Y Position');
 pointLightFolder.add(pointLight.position, 'z', 0, 100).name('Z Position');
-pointLightFolder.add(pointLight,'intensity', 0, 100).name('Point Light Intensity');
+pointLightFolder.add(pointLight,'intensity', 0, 1000).name('Point Light Intensity');
 pointLightFolder.add(pointLight, 'distance', 0, 100).name('Point Light Distance')
 
 
@@ -159,9 +165,9 @@ window.addEventListener('fullscreenchange', () => {
 //main animation loop
 function mainAnimate() {
   window.requestAnimationFrame(mainAnimate);
-  sphere.rotation.x += 0.01;
-  sphere.rotation.y += 0.005;
-  sphere.rotation.z += 0.01;
+  // sphere.rotation.x += 0.01;
+  // sphere.rotation.y += 0.005;
+  // sphere.rotation.z += 0.01;
 
   particleMesh.rotation.x += 0.0002
   particleMesh.rotation.y -= 0.0002
