@@ -11,33 +11,55 @@ hyml acts as root
 
 MAKE A GUI FOR THE APP!!!!!!!!!!!!!!!!!
 */
+import './style.css'
 
 import * as THREE from 'three';
 import { GUI } from 'dat.gui';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+
+const sizes = {
+  width: window.innerWidth,
+  height: window.innerHeight
+}
 
 
 //setting up the main 'components'
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
   canvas: document.querySelector('#bg')
 });
 
+
+
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(sizes.width, sizes.height);
 camera.position.setZ(30);
 
 //renderer.render(scene, camera); //render scene and camera
 
 
-
-const geometry = new THREE.SphereGeometry(15, 32, 16);
-const material = new THREE.MeshBasicMaterial({color: 0x8B516A, wireframe: true}); //8B516A //0xB70AFA
+//creating sphere
+const geometry = new THREE.SphereGeometry(15, 64, 64);
+const material = new THREE.MeshStandardMaterial({color: 0x8B516A}); //8B516A //0xB70AFA
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
 
-// const ambientLight = new THREE.ambientLight(0xFFFFFF);
-// scene.add(ambientLight);
+//creating Point Light
+const pointLight = new THREE.PointLight(0xFFFFFF, 5);
+pointLight.position.set(10, 10, 10)
+scene.add(pointLight);
+
+const ambientLight = new THREE.AmbientLight(0xFFFFFF);
+scene.add(ambientLight);
+
+//creating Helpers
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 2, 0xffffff);
+const gridHelper = new THREE.GridHelper(200, 50);
+scene.add(pointLightHelper, gridHelper);
+
+const orbitControls = new OrbitControls(camera, renderer.domElement);
 
 //setting background audio
 const audioListener = new THREE.AudioListener();
@@ -50,7 +72,7 @@ audioLoader.load('./assets/bgAudio.mp3', function(buffer) {
   bgAudio.setBuffer(buffer);
   bgAudio.setLoop(true);
   bgAudio.setVolume(0.1);
-  bgAudio.play();
+  //bgAudio.play();
 })
 
 //DEV GUI 
@@ -69,9 +91,13 @@ const sphereData = {
 const sphereFolder = gui.addFolder('Sphere Geometry');
 sphereFolder.add(sphereData, 'radius', 0, 30).onChange(regenerateSphere);
 sphereFolder.add(sphere.material, 'wireframe');
-// gui.add(bgAudio, 'setVolume', 0, 1).name('Background Audio Volume')
-// sphereFolder.add(sphere.scale, 'y', 0, 50).name('Scale Y Axis');
-// sphereFolder.add(sphere.scale, 'z', 0, 50).name('Scale Z Axis');
+
+const pointLightFolder = gui.addFolder('Point Light');
+pointLightFolder.add(pointLight.position, 'x', 0, 100).name('X Position');
+pointLightFolder.add(pointLight.position, 'y', 0, 100).name('Y Position');
+pointLightFolder.add(pointLight.position, 'z', 0, 100).name('Z Position');
+pointLightFolder.add(pointLight,'intensity', 0, 100).name('Point Light Intensity');
+pointLightFolder.add(pointLight, 'distance', 0, 100).name('Point Light Distance')
 
 
 
@@ -89,14 +115,26 @@ function regenerateSphere () {
   sphere.geometry = newGeometry
 }
 
+window.addEventListener('resize', () => {
+  sizes.width = window.innerWidth;
+  sizes.height = window.innerHeight;
+  camera.updateProjectionMatrix();
+  camera.aspect = sizes.width / sizes.height;
+  renderer.setSize(sizes.width, sizes.height);
+})
+
+
 //main animation loop
 function mainAnimate() {
-  requestAnimationFrame(mainAnimate);
+  window.requestAnimationFrame(mainAnimate);
   sphere.rotation.x += 0.01;
   sphere.rotation.y += 0.005;
   sphere.rotation.z += 0.01;
 
   renderer.render(scene, camera);
+
+  orbitControls.update();
 }
 
 mainAnimate();
+
