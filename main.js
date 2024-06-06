@@ -28,13 +28,17 @@ const sizes = {
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector('#bg')
+  canvas: document.querySelector('#bg'),
+  // alpha: true
 });
 
-
+// const video = document.getElementById('bg-video');
+// const bgVideoTexture = new THREE.VideoTexture(video);
+// scene.background = bgVideoTexture;
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(sizes.width, sizes.height);
+renderer.setClearColor(new THREE.Color('#110018'), 1)
 camera.position.setZ(30);
 
 //renderer.render(scene, camera); //render scene and camera
@@ -45,6 +49,24 @@ const geometry = new THREE.SphereGeometry(15, 64, 64);
 const material = new THREE.MeshStandardMaterial({color: 0x8B516A}); //8B516A //0xB70AFA
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
+
+//creating particles
+const particleMaterial = new THREE.PointsMaterial({
+  size: 0.005
+})
+const particleGeometry = new THREE.BufferGeometry;
+const particleCount = 10000;
+
+const posArr = new Float32Array(particleCount * 3) // TL;DR each arr is xyz, xyz, xyz, etc.
+
+for (let i = 0; i < particleCount * 3; i++) {
+  posArr[i] = (Math.random() - 0.5) * 200
+}
+
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+
+const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleMesh);
 
 //creating Point Light
 const pointLight = new THREE.PointLight(0xFFFFFF, 5);
@@ -115,6 +137,8 @@ function regenerateSphere () {
   sphere.geometry = newGeometry
 }
 
+
+
 window.addEventListener('resize', () => {
   sizes.width = window.innerWidth;
   sizes.height = window.innerHeight;
@@ -123,6 +147,14 @@ window.addEventListener('resize', () => {
   renderer.setSize(sizes.width, sizes.height);
 })
 
+window.addEventListener('fullscreenchange', () => {
+  // sizes.width = window.innerWidth;
+  // sizes.height = window.innerHeight;
+  // camera.updateProjectionMatrix();
+  // camera.aspect = sizes.width / sizes.height;
+  // renderer.setSize(sizes.width, sizes.height);
+  window.location.reload();
+})
 
 //main animation loop
 function mainAnimate() {
