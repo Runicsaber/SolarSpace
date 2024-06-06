@@ -38,7 +38,7 @@ const renderer = new THREE.WebGLRenderer({
 
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(sizes.width, sizes.height);
-renderer.setClearColor(new THREE.Color('#110018'), 1)
+renderer.setClearColor(new THREE.Color('#0b0010'), 1)
 camera.position.setZ(30);
 
 //renderer.render(scene, camera); //render scene and camera
