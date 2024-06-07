@@ -17,12 +17,10 @@ import * as THREE from 'three';
 import { GUI } from 'dat.gui';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-
 const sizes = {
   width: window.innerWidth,
   height: window.innerHeight
 }
-
 
 //setting up the main 'components'
 const scene = new THREE.Scene();
@@ -43,52 +41,6 @@ camera.position.setZ(30);
 
 //renderer.render(scene, camera); //render scene and camera
 
-
-//creating sphere
-const earthTexture = new THREE.TextureLoader().load('./assets/earthAssets/8k_earth_nightmap.jpg')
-const earthNormalTexture = new THREE.TextureLoader().load('./assets/earthAssets/earth-normal-map.jpeg')
-const geometry = new THREE.SphereGeometry(15, 64, 64);
-const material = new THREE.MeshStandardMaterial({
-  //color: 0x8B516A,
-  map: earthTexture,
-  normalMap: earthNormalTexture
-}); //8B516A //0xB70AFA
-const sphere = new THREE.Mesh(geometry, material);
-scene.add(sphere);
-
-//creating particles
-const particleMaterial = new THREE.PointsMaterial({
-  size: 0.005
-})
-const particleGeometry = new THREE.BufferGeometry;
-const particleCount = 10000;
-
-const posArr = new Float32Array(particleCount * 3) // TL;DR each arr is xyz, xyz, xyz, etc.
-
-for (let i = 0; i < particleCount * 3; i++) {
-  posArr[i] = (Math.random() - 0.5) * 200
-}
-
-particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
-
-const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
-scene.add(particleMesh);
-
-//creating Point Light
-const pointLight = new THREE.PointLight(0xFFFFFF, 5);
-pointLight.position.set(10, 10, 10)
-scene.add(pointLight);
-
-const ambientLight = new THREE.AmbientLight(0xFFFFFF);
-scene.add(ambientLight);
-
-//creating Helpers
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 2, 0xffffff);
-const gridHelper = new THREE.GridHelper(200, 50);
-scene.add(pointLightHelper, gridHelper);
-
-const orbitControls = new OrbitControls(camera, renderer.domElement);
-
 //setting background audio
 const audioListener = new THREE.AudioListener();
 camera.add(audioListener);
@@ -100,8 +52,155 @@ audioLoader.load('./assets/bgAudio.mp3', function(buffer) {
   bgAudio.setBuffer(buffer);
   bgAudio.setLoop(true);
   bgAudio.setVolume(0.1);
-  //bgAudio.play();
+  bgAudio.play();
 })
+
+//creating sun
+const sunTexture = new THREE.TextureLoader().load('./assets/sunAssets/8k_sun.jpg')
+//const sunNormalTexture = new THREE.TextureLoader().load('./assets/earthAssets/')
+const sunGeometry = new THREE.SphereGeometry(15, 64, 64);
+const sunMaterial = new THREE.MeshPhysicalMaterial({
+  map: sunTexture
+});
+
+const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+scene.add(sun);
+
+//creating mercury
+const mercuryTexture = new THREE.TextureLoader().load('./assets/mercuryAssets/8k_mercury.jpg')
+const mercuryGeometry = new THREE.SphereGeometry(15, 64, 64);
+const mercuryMaterial = new THREE.MeshPhysicalMaterial({
+  map: mercuryTexture
+});
+
+const mercury = new THREE.Mesh(mercuryGeometry, mercuryMaterial);
+scene.add(mercury);
+mercury.position.setY(-50);
+
+//creating venus
+const venusTexture = new THREE.TextureLoader().load('./assets/venusAssets/8k_venus_surface.jpg')
+const venusGeometry = new THREE.SphereGeometry(15, 64, 64);
+const venusMaterial = new THREE.MeshPhysicalMaterial({
+  map: venusTexture
+});
+
+const venus = new THREE.Mesh(venusGeometry, venusMaterial);
+scene.add(venus);
+venus.position.setY(-100);
+
+//creating earth
+const earthTexture = new THREE.TextureLoader().load('./assets/earthAssets/8k_earth_nightmap.jpg')
+const earthNormalTexture = new THREE.TextureLoader().load('./assets/earthAssets/earth-normal-map.jpeg')
+const earthGeometry = new THREE.SphereGeometry(15, 64, 64);
+const earthMaterial = new THREE.MeshPhysicalMaterial({
+  //color: 0x8B516A,
+  map: earthTexture,
+  normalMap: earthNormalTexture
+}); //8B516A //0xB70AFA
+const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+scene.add(earth);
+
+earth.position.setY(-150)
+
+//creating moon (earth moon)
+const moonTexture = new THREE.TextureLoader().load('./assets/moonAssets/8k_moon.jpg')
+const moonGeometry = new THREE.SphereGeometry(15, 64, 64);
+const moonMaterial = new THREE.MeshPhysicalMaterial({
+  map: moonTexture
+});
+
+const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+scene.add(moon);
+moon.position.setY(-150);
+moon.position.setX(50);
+
+//creating mars
+const marsTexture = new THREE.TextureLoader().load('./assets/marsAssets/8k_mars.jpg')
+const marsGeometry = new THREE.SphereGeometry(15, 64, 64);
+const marsMaterial = new THREE.MeshPhysicalMaterial({
+  map: marsTexture
+});
+
+const mars = new THREE.Mesh(marsGeometry, marsMaterial);
+scene.add(mars);
+mars.position.setY(-200);
+
+//creating jupiter
+const jupiterTexture = new THREE.TextureLoader().load('./assets/jupiterAssets/8k_jupiter.jpg')
+const jupiterGeometry = new THREE.SphereGeometry(15, 64, 64);
+const jupiterMaterial = new THREE.MeshPhysicalMaterial({
+  map: jupiterTexture
+});
+
+const jupiter = new THREE.Mesh(jupiterGeometry, jupiterMaterial);
+scene.add(jupiter);
+jupiter.position.setY(-250);
+
+//creating saturn
+const saturnTexture = new THREE.TextureLoader().load('./assets/saturnAssets/8k_saturn.jpg')
+const saturnGeometry = new THREE.SphereGeometry(15, 64, 64);
+const saturnMaterial = new THREE.MeshPhysicalMaterial({
+  map: saturnTexture
+});
+
+const saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
+scene.add(saturn);
+saturn.position.setY(-300);
+
+//creating uranus
+const uranusTexture = new THREE.TextureLoader().load('./assets/uranusAssets/2k_uranus.jpg')
+const uranusGeometry = new THREE.SphereGeometry(15, 64, 64);
+const uranusMaterial = new THREE.MeshPhysicalMaterial({
+  map: uranusTexture
+});
+
+const uranus = new THREE.Mesh(uranusGeometry, uranusMaterial);
+scene.add(uranus);
+uranus.position.setY(-350);
+
+//creating neptune
+const neptuneTexture = new THREE.TextureLoader().load('./assets/neptuneAssets/2k_neptune.jpg')
+const neptuneGeometry = new THREE.SphereGeometry(15, 64, 64);
+const neptuneMaterial = new THREE.MeshPhysicalMaterial({
+  map: neptuneTexture
+});
+
+const neptune = new THREE.Mesh(neptuneGeometry, neptuneMaterial);
+scene.add(neptune);
+neptune.position.setY(-400);
+
+//creating particles
+const particleMaterial = new THREE.PointsMaterial({
+  size: 0.005
+})
+const particleGeometry = new THREE.BufferGeometry;
+const particleCount = 10000;
+
+const posArr = new Float32Array(particleCount * 3) // TL;DR each arr is xyz, xyz, xyz, etc.
+
+for (let i = 0; i < particleCount * 3; i++) {
+  posArr[i] = (Math.random() - 0.5) * 1000
+}
+
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+
+const particleMesh = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleMesh);
+
+//creating Point Light
+const pointLight = new THREE.PointLight(0xFFFFFF, 5);
+pointLight.position.set(10, 10, 10)
+scene.add(pointLight);
+//creating ambient light
+const ambientLight = new THREE.AmbientLight(0xFFFFFF, 4);
+scene.add(ambientLight);
+
+//creating Helpers
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 2, 0xffffff);
+const gridHelper = new THREE.GridHelper(200, 50);
+scene.add(pointLightHelper, gridHelper);
+
+const orbitControls = new OrbitControls(camera, renderer.domElement);
 
 //DEV GUI 
 const gui = new GUI();
@@ -118,7 +217,7 @@ const sphereData = {
 
 const sphereFolder = gui.addFolder('Sphere Geometry');
 sphereFolder.add(sphereData, 'radius', 0, 30).onChange(regenerateSphere);
-sphereFolder.add(sphere.material, 'wireframe');
+sphereFolder.add(earth.material, 'wireframe');
 
 const pointLightFolder = gui.addFolder('Point Light');
 pointLightFolder.add(pointLight.position, 'x', 0, 100).name('X Position');
@@ -139,8 +238,8 @@ function regenerateSphere () {
     sphereData.thetaStart,
     sphereData.thetaLength
   )
-  sphere.geometry.dispose();
-  sphere.geometry = newGeometry
+  earth.geometry.dispose();
+  earth.geometry = newGeometry
 }
 
 
@@ -153,25 +252,33 @@ window.addEventListener('resize', () => {
   renderer.setSize(sizes.width, sizes.height);
 })
 
-window.addEventListener('fullscreenchange', () => {
-  // sizes.width = window.innerWidth;
-  // sizes.height = window.innerHeight;
-  // camera.updateProjectionMatrix();
-  // camera.aspect = sizes.width / sizes.height;
-  // renderer.setSize(sizes.width, sizes.height);
-  window.location.reload();
-})
+// window.addEventListener('fullscreenchange', () => {
+//   // sizes.width = window.innerWidth;
+//   // sizes.height = window.innerHeight;
+//   // camera.updateProjectionMatrix();
+//   // camera.aspect = sizes.width / sizes.height;
+//   // renderer.setSize(sizes.width, sizes.height);
+//   window.location.reload();
+// })
+
 
 //main animation loop
 function mainAnimate() {
   window.requestAnimationFrame(mainAnimate);
-  // sphere.rotation.x += 0.01;
-  // sphere.rotation.y += 0.005;
-  // sphere.rotation.z += 0.01;
+  sun.rotation.y += 0.0005;
+  mercury.rotation.y += 0.0005;
+  venus.rotation.y += 0.0005;
+  earth.rotation.y += 0.0005;
+  moon.rotation.y += 0.0005;
+  mars.rotation.y += 0.0005;
+  jupiter.rotation.y += 0.0005;
+  saturn.rotation.y += 0.0005;
+  uranus.rotation.y += 0.0005;
+  neptune.rotation.y += 0.0005;
 
   particleMesh.rotation.x += 0.0002
   particleMesh.rotation.y -= 0.0002
-  particleMesh.rotation.z += 0.0002
+  particleMesh.rotation.z += 0.0001
 
   renderer.render(scene, camera);
 
