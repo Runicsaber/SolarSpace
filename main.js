@@ -261,6 +261,16 @@ window.addEventListener('resize', () => {
 //   window.location.reload();
 // })
 
+function moveCamera () {
+  const top = document.body.getBoundingClientRect().top;
+
+  camera.position.setZ(top * -0.01);
+  camera.position.setX(top * -0.01);
+  camera.position.setY(top * -0.01);
+}
+
+// window.addEventListener('scroll', moveCamera);
+document.body.onscroll = moveCamera;
 
 //main animation loop
 function mainAnimate() {
