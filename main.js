@@ -92,7 +92,7 @@ venus.position.setY(-100);
 const earthTexture = new THREE.TextureLoader().load('./assets/earthAssets/8k_earth_nightmap.jpg')
 const earthNormalTexture = new THREE.TextureLoader().load('./assets/earthAssets/earth-normal-map.jpeg')
 const earthGeometry = new THREE.SphereGeometry(15, 64, 64);
-const earthMaterial = new THREE.MeshPhysicalMaterial({
+const earthMaterial = new THREE.MeshStandardMaterial({
   //color: 0x8B516A,
   map: earthTexture,
   normalMap: earthNormalTexture
@@ -111,8 +111,8 @@ const moonMaterial = new THREE.MeshPhysicalMaterial({
 
 const moon = new THREE.Mesh(moonGeometry, moonMaterial);
 scene.add(moon);
-moon.position.setY(-150);
-moon.position.setX(50);
+moon.position.setY(-200);
+// moon.position.setX(50);
 
 //creating mars
 const marsTexture = new THREE.TextureLoader().load('./assets/marsAssets/8k_mars.jpg')
@@ -123,7 +123,7 @@ const marsMaterial = new THREE.MeshPhysicalMaterial({
 
 const mars = new THREE.Mesh(marsGeometry, marsMaterial);
 scene.add(mars);
-mars.position.setY(-200);
+mars.position.setY(-250);
 
 //creating jupiter
 const jupiterTexture = new THREE.TextureLoader().load('./assets/jupiterAssets/8k_jupiter.jpg')
@@ -134,7 +134,7 @@ const jupiterMaterial = new THREE.MeshPhysicalMaterial({
 
 const jupiter = new THREE.Mesh(jupiterGeometry, jupiterMaterial);
 scene.add(jupiter);
-jupiter.position.setY(-250);
+jupiter.position.setY(-300);
 
 //creating saturn
 const saturnTexture = new THREE.TextureLoader().load('./assets/saturnAssets/8k_saturn.jpg')
@@ -145,7 +145,18 @@ const saturnMaterial = new THREE.MeshPhysicalMaterial({
 
 const saturn = new THREE.Mesh(saturnGeometry, saturnMaterial);
 scene.add(saturn);
-saturn.position.setY(-300);
+saturn.position.setY(-350);
+//creating saturn's ring
+const saturnRingTexture = new THREE.TextureLoader().load('./assets/saturnAssets/8k_saturn_ring_alpha.png')
+const saturnRingGeometry = new THREE.RingGeometry(23, 25, 32);
+const saturnRingMaterial = new THREE.MeshPhysicalMaterial({
+  map: saturnRingTexture
+});
+
+const saturnRing = new THREE.Mesh(saturnRingGeometry, saturnRingMaterial);
+scene.add(saturnRing);
+saturnRing.position.setY(-350);
+
 
 //creating uranus
 const uranusTexture = new THREE.TextureLoader().load('./assets/uranusAssets/2k_uranus.jpg')
@@ -156,18 +167,18 @@ const uranusMaterial = new THREE.MeshPhysicalMaterial({
 
 const uranus = new THREE.Mesh(uranusGeometry, uranusMaterial);
 scene.add(uranus);
-uranus.position.setY(-350);
+uranus.position.setY(-400);
 
 //creating neptune
 const neptuneTexture = new THREE.TextureLoader().load('./assets/neptuneAssets/2k_neptune.jpg')
 const neptuneGeometry = new THREE.SphereGeometry(15, 64, 64);
-const neptuneMaterial = new THREE.MeshPhysicalMaterial({
+const neptuneMaterial = new THREE.MeshStandardMaterial({
   map: neptuneTexture
 });
 
 const neptune = new THREE.Mesh(neptuneGeometry, neptuneMaterial);
 scene.add(neptune);
-neptune.position.setY(-400);
+neptune.position.setY(-450);
 
 //creating particles
 const particleMaterial = new THREE.PointsMaterial({
@@ -215,9 +226,26 @@ const sphereData = {
   thetaLength: Math.PI,
 }
 
-const sphereFolder = gui.addFolder('Sphere Geometry');
-sphereFolder.add(sphereData, 'radius', 0, 30).onChange(regenerateSphere);
-sphereFolder.add(earth.material, 'wireframe');
+const Speed = {
+  speedY: 0.0005
+}
+
+const ObjectPosition = {
+  positionX: 0,
+  positionY: 0,
+  positionZ: 0
+}
+
+const earthFolder = gui.addFolder('Earth Geometry');
+earthFolder.add(sphereData, 'radius', 0, 30).onChange(() => {regenerateSphere(earth)});
+earthFolder.add(earth.material, 'wireframe');
+
+const moonFolder = gui.addFolder('Moon Geometry');
+moonFolder.add(sphereData, 'radius', 0, 30).onChange(() => {regenerateSphere(moon)});
+moonFolder.add(Speed, 'speedY', 0.0001, 0.005).name('Y rotation');
+moonFolder.add(ObjectPosition, 'positionX', 0, 1).name('Position: X')
+moonFolder.add(ObjectPosition, 'positionY', 0, 1).name('Position: Y')
+moonFolder.add(ObjectPosition, 'positionZ', 0, 1).name('Position: Z')
 
 const pointLightFolder = gui.addFolder('Point Light');
 pointLightFolder.add(pointLight.position, 'x', 0, 100).name('X Position');
@@ -228,7 +256,7 @@ pointLightFolder.add(pointLight, 'distance', 0, 100).name('Point Light Distance'
 
 
 
-function regenerateSphere () {
+function regenerateSphere (planet) {
   const newGeometry = new THREE.SphereGeometry(
     sphereData.radius,
     sphereData.widthSegments,
@@ -238,11 +266,13 @@ function regenerateSphere () {
     sphereData.thetaStart,
     sphereData.thetaLength
   )
-  earth.geometry.dispose();
-  earth.geometry = newGeometry
+  planet.geometry.dispose();
+  planet.geometry = newGeometry
 }
 
-
+function changeSpeed (num) {
+  Speed.speed = num;
+}
 
 window.addEventListener('resize', () => {
   sizes.width = window.innerWidth;
@@ -279,12 +309,17 @@ function mainAnimate() {
   mercury.rotation.y += 0.0005;
   venus.rotation.y += 0.0005;
   earth.rotation.y += 0.0005;
-  moon.rotation.y += 0.0005;
+  moon.rotation.y += Speed.speedY;
   mars.rotation.y += 0.0005;
   jupiter.rotation.y += 0.0005;
   saturn.rotation.y += 0.0005;
   uranus.rotation.y += 0.0005;
   neptune.rotation.y += 0.0005;
+  saturnRing.rotation.x = -90;
+
+  moon.position.x += ObjectPosition.positionX;
+  moon.position.y += ObjectPosition.positionY;
+  moon.position.z += ObjectPosition.positionZ;
 
   particleMesh.rotation.x += 0.0002
   particleMesh.rotation.y -= 0.0002
