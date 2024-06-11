@@ -12,10 +12,10 @@
 
 }
 
-/* html, body {
+html, body {
   overflow-x: hidden;
   overflow-y: hidden; 
-} */
+}
 
 canvas {
   position: fixed;
